@@ -9,7 +9,7 @@ import os
 class FileModel(QAbstractItemModel):
     def __init__(self, path, parent=None):
         super(FileModel, self).__init__(parent)
-        self.rootItem = FileItem(None)
+        self.rootItem = FileItem()
         self.root = FileItem(path, self.rootItem)
         self.rootItem.appendChild(self.root)
         self.file_icon = QIcon(os.path.join('images', 'file_gray.jpg'))
