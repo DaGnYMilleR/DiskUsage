@@ -48,7 +48,10 @@ class FileItem:
 
     @staticmethod
     def time_handler(time_str):
-        return datetime.datetime.fromtimestamp(time_str).strftime("%d.%m.%Y")
+        try:
+            return datetime.datetime.fromtimestamp(time_str).strftime("%d.%m.%Y")
+        except TypeError:
+            return "03.10.2001"
 
     def increase_size_to_all_parents(self, value, parent):
         while parent is not None and parent.full_path is not None and parent.itemData[1] is not None:
