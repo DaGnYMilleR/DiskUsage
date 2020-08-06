@@ -11,10 +11,13 @@ class FileModel(QAbstractItemModel):
         super(FileModel, self).__init__(parent)
         self.rootItem = FileItem()
         self.root = FileItem(path, self.rootItem)
+        self.path = path
         self.rootItem.appendChild(self.root)
+
+    def setup_model(self):
         self.file_icon = QIcon(os.path.join('images', 'file_gray.jpg'))
         self.folder_icon = QIcon(os.path.join('images', 'folder_image.png'))
-        self.setup_model_data(self.root, path)
+        self.setup_model_data(self.root, self.path)
 
     def columnCount(self, parent=None):
         if parent.isValid():
@@ -38,7 +41,7 @@ class FileModel(QAbstractItemModel):
 
         return None
 
-    def flags(self, index) -> Qt.ItemFlags:
+    def flags(self, index):
         if not index.isValid():
             return Qt.NoItemFlags
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable
@@ -70,7 +73,7 @@ class FileModel(QAbstractItemModel):
             return self.createIndex(row, column, child_item)
         return QModelIndex()
 
-    def parent(self, child) -> QModelIndex:
+    def parent(self, child):
         if not child.isValid():
             return QModelIndex()
         child_item = child.internalPointer()

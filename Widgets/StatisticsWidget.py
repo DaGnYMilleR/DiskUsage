@@ -14,13 +14,12 @@ class StatisticsWidget(QWidget):
         self.setLayout(self.layout)
         self.text_label = QLabel("\n", parent=self)
 
-
     def explodeSlice(self, exploded, slice_, v):
         slice_.setExploded(exploded)
         slice_.setLabelVisible(exploded)
         self.text_label.setText(f'num of files: {slice_.value()} \n total size: {v}')
 
-    def create_chart(self):
+    def load_slices(self):
         series = QPieSeries()
         for i in EXTENSHIONS.keys():
             slice = QPieSlice(i, EXTENSHIONS[i][0])
@@ -28,6 +27,10 @@ class StatisticsWidget(QWidget):
             slice.setPen(QPen(Qt.black, 2))
             slice.hovered[bool].connect(functools.partial(self.explodeSlice, slice_=slice, v=v))
             series.append(slice)
+        return series
+
+    def create_chart(self):
+        series = self.load_slices()
 
         chart = QChart()
         chart.legend().hide()

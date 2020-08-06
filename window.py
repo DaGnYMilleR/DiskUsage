@@ -40,12 +40,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Disk Usage")
         self.show()
 
-    def on_count_changed(self, value):
-        self.progress_bar.setValue(value)
-
-    def set_model(self, path):
-        self.model = FileModel(path)
-
     @thread
     def load_model_data(self, signal, path):
         """
@@ -55,6 +49,7 @@ class MainWindow(QMainWindow):
         :return:
         """
         self.model = FileModel(path)
+        self.model.setup_model()
         signal.emit()
 
     @thread
@@ -102,8 +97,6 @@ class MainWindow(QMainWindow):
         self.grid.addWidget(filter_button, 6, 1, 1, 2)
         self.grid.addWidget(reset_button, 6, 3, 1, 2)
         self.grid.addWidget(self.progress_bar, 7, 0, 1, 12)
-
-
 
     def reset_filter_settings(self):
         """
