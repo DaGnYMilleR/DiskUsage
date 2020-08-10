@@ -34,6 +34,7 @@ class MainWindow(QMainWindow):
         self.stat_widget = StatisticsWidget()
 
         self.model = None
+        self.model_loaded = False
 
         self.filter_widget = FilterWidget(self)
         self.showMaximized()
@@ -48,16 +49,25 @@ class MainWindow(QMainWindow):
         :param path: string
         :return:
         """
+        a = time.time()
+        print(f"load model at {time.ctime(a)}")
         self.model = FileModel(path)
         self.model.setup_model()
+        self.model_loaded = True
+        b = time.time()
+        print(f"load end at {time.ctime(b)}")
+        print(b - a)
         signal.emit()
 
+    #small one 0.5714707374572754
+    #small multi  0.4876995086669922
+    #big one 356.1352481842041
+    #big multi  196.5511121749878
     @thread
     def progress_bar_value_handler(self, signal):
         value = 0
         while value < 100:
-
-            if self.model is None:
+            if not self.model_loaded:
                 signal.emit(value)
                 if value == 99:
                     time.sleep(1)

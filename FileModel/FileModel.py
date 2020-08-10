@@ -4,6 +4,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from FileModel.FileItem import FileItem
 import os
+import threading
+import multiprocessing
 
 
 class FileModel(QAbstractItemModel):
@@ -98,14 +100,20 @@ class FileModel(QAbstractItemModel):
         :param path: path to file
         :return:
         """
+        threads = []
         for item in os.listdir(path):
             current_path = os.path.join(path, item)
             if os.path.isfile(current_path):
                 parent.appendChild(FileItem(current_path, parent))
             elif os.path.isdir(current_path):
                 child = FileItem(current_path, parent)
-                self.add_children(child, current_path)
+                tr = threading.Thread(target=self.add_children, args=(child, current_path))
+                threads.append(tr)
+                tr.start()
                 parent.appendChild(child)
+
+        for tr in threads:
+            tr.join()
 
     @staticmethod
     def add_children(parent, path):
